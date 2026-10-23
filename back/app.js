@@ -1647,8 +1647,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Renderizar cambios
         renderApp();
+
+        // Notificación nativa si corre en Electron
+        if (window.electronAPI && typeof window.electronAPI.notify === 'function') {
+            window.electronAPI.notify('Tarea Registrada ⚡', `Se agregó: "${nombre}" para ${materia}`);
+        }
     });
+
+    // Indicar si se está ejecutando dentro de Electron
+    if (window.electronAPI && window.electronAPI.isElectron) {
+        document.body.classList.add('is-electron');
+        const tag = document.querySelector('.header-tag span:last-child');
+        if (tag) {
+            tag.textContent = 'Desktop App (Electron)';
+        }
+    }
 
     // Inicializar renderizado
     renderApp();
 });
+

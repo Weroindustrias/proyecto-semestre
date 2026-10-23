@@ -7,6 +7,7 @@
 # ============================================================================
 
 import unittest
+from dataclasses import FrozenInstanceError
 from organizador_tareas import (
     Dificultad,
     Tarea,
@@ -241,6 +242,127 @@ class TestFiltrarPorDificultad(unittest.TestCase):
         solo_altas = [Tarea("X", "M", 1, Dificultad.ALTA, 2)]
         resultado  = filtrar_por_dificultad(solo_altas, Dificultad.BAJA)
         self.assertEqual(resultado, [])
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GRUPO 7 — Inmutabilidad Formal (Leyes de Inmutabilidad en PF)
+# ─────────────────────────────────────────────────────────────────────────────
+class TestInmutabilidad(unittest.TestCase):
+
+    def test_tarea_es_inmutable_no_permite_modificar_atributos(self):
+        """Tarea(frozen=True) no debe permitir mutación de sus atributos"""
+        tarea = Tarea("Cálculo", "Matemáticas", 3, Dificultad.ALTA, 4)
+        with self.assertRaises(FrozenInstanceError):
+            tarea.dias_restantes = 1  # Intento de mutación destructiva
+
+    def test_tarea_no_permite_modificar_nombre(self):
+        """Comprueba que el nombre es inmutable tras la instanciación"""
+        tarea = Tarea("Proyecto", "POO", 2, Dificultad.MEDIA, 2)
+        with self.assertRaises(FrozenInstanceError):
+            tarea.nombre = "Nuevo Nombre"
+
+    def test_procesar_no_muta_la_lista_original(self):
+        """procesar_y_priorizar no debe alterar la colección original (No efectos colaterales)"""
+        tareas_originales = [
+            Tarea("Investigación", "Física", 5, Dificultad.BAJA, 2),
+            Tarea("Examen", "POO", 1, Dificultad.ALTA, 4),
+        ]
+        copia_referencia = list(tareas_originales)
+        procesar_y_priorizar(tareas_originales)
+        self.assertEqual(
+            tareas_originales,
+            copia_referencia,
+            "La lista de entrada no debe sufrir mutaciones destructivas in-place",
+        )
+
+    def test_filtrar_no_muta_la_lista_original(self):
+        """filtrar_por_dificultad debe retornar una nueva colección sin alterar la original"""
+        tareas = [
+            Tarea("A", "M", 2, Dificultad.ALTA, 3),
+            Tarea("B", "M", 3, Dificultad.MEDIA, 2),
+        ]
+        copia = list(tareas)
+        _ = filtrar_por_dificultad(tareas, Dificultad.ALTA)
+        self.assertEqual(tareas, copia)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GRUPO 8 — Transparencia Referencial y Determinismo Estricto
+# ─────────────────────────────────────────────────────────────────────────────
+class TestTransparenciaReferencial(unittest.TestCase):
+
+    def test_transparencia_referencial_calcular_prioridad(self):
+        """Llamar a calcular_prioridad N veces con argumentos idénticos siempre produce el mismo valor"""
+        tarea = Tarea("Examen Final", "Redes", 2, Dificultad.ALTA, 5)
+        primer_resultado = calcular_prioridad(tarea)
+        for _ in range(10):
+            self.assertEqual(calcular_prioridad(tarea), primer_resultado)
+
+    def test_transparencia_referencial_obtener_peso(self):
+        """obtener_peso_dificultad carece de estado interno y produce resultados deterministas"""
+        self.assertEqual(obtener_peso_dificultad(Dificultad.ALTA), 3.0)
+        self.assertEqual(obtener_peso_dificultad(Dificultad.ALTA), 3.0)
+
+    def test_sustitucion_referencial_expresion_por_valor(self):
+        """En PF, f(x) puede sustituirse directamente por su valor calculado sin alterar el programa"""
+        tarea = Tarea("T", "M", 1, Dificultad.ALTA, 2)
+        score_directo = (3.0 * 2) / (1 + 0.1)
+        score_funcion = calcular_prioridad(tarea)
+        self.assertAlmostEqual(score_directo, score_funcion, places=9)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GRUPO 9 — Casos de Borde (Edge Cases) y Robustez Matemática
+# ─────────────────────────────────────────────────────────────────────────────
+class TestCasosDeBorde(unittest.TestCase):
+
+    def test_cero_dias_no_causa_division_por_cero(self):
+        """Cuando dias_restantes=0, el factor epsilon (+0.1) previene ZeroDivisionError"""
+        tarea = Tarea("Entrega Inmediata", "Sistemas", 0, Dificultad.ALTA, 2)
+        score = calcular_prioridad(tarea)
+        self.assertAlmostEqual(score, (3.0 * 2) / 0.1, places=9)
+
+    def test_frontera_score_tres_exacto_clasifica_moderado(self):
+        """Si score == 3.0 y dias > 1, la condición estricta score > 3.0 no se cumple, clasificando como MODERADO"""
+        tarea = Tarea("Tarea Frontera", "Materia", 2, Dificultad.MEDIA, 3)
+        razon = generar_razon(tarea, 3.0)
+        self.assertIn("MODERADO", razon)
+
+    def test_frontera_score_ligeramente_mayor_a_tres_clasifica_importante(self):
+        """Si score = 3.01 y dias > 1, debe clasificar como IMPORTANTE"""
+        tarea = Tarea("Tarea Frontera", "Materia", 2, Dificultad.MEDIA, 3)
+        razon = generar_razon(tarea, 3.01)
+        self.assertIn("IMPORTANTE", razon)
+
+    def test_estabilidad_con_tareas_de_igual_prioridad(self):
+        """Tareas con igual prioridad no causan fallas ni inconsistencias en el pipeline"""
+        t1 = Tarea("T1", "M", 3, Dificultad.MEDIA, 2)
+        t2 = Tarea("T2", "M", 3, Dificultad.MEDIA, 2)
+        agenda = procesar_y_priorizar([t1, t2])
+        self.assertEqual(len(agenda), 2)
+        self.assertAlmostEqual(agenda[0][1], agenda[1][1], places=9)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GRUPO 10 — Composición Funcional (Filter + Reduce)
+# ─────────────────────────────────────────────────────────────────────────────
+class TestComposicionFuncional(unittest.TestCase):
+
+    def test_composicion_filter_y_reduce_horas_por_dificultad(self):
+        """Composición declarativa: filtrar tareas Alta y reducir para obtener solo sus horas acumuladas"""
+        tareas = [
+            Tarea("T1", "M", 2, Dificultad.ALTA, 4),
+            Tarea("T2", "M", 3, Dificultad.BAJA, 2),
+            Tarea("T3", "M", 1, Dificultad.ALTA, 3),
+        ]
+        altas = filtrar_por_dificultad(tareas, Dificultad.ALTA)
+        horas_altas = calcular_tiempo_total_estimado(altas)
+        self.assertEqual(horas_altas, 7)  # 4 + 3 = 7
+
+    def test_reduccion_con_un_solo_elemento(self):
+        """calcular_tiempo_total_estimado con un único elemento retorna sus horas sin fallas de base"""
+        tareas = [Tarea("Única", "M", 3, Dificultad.MEDIA, 5)]
+        self.assertEqual(calcular_tiempo_total_estimado(tareas), 5)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
