@@ -1,13 +1,13 @@
-# 📝 Resumen de Cambios Aplicados en la Carpeta `Proyecto 1`
+# 📝 Resumen de Cambios Aplicados en el Proyecto
 
 **Alumno:** Melvin Jaeen García Camacho  
 **Materia:** Programación Funcional  
-**Proyecto:** Organizador Inteligente de Tareas (Rust Engine)  
-**Última Actualización (Timestamp):** `2026-09-30T13:10:44-06:00`  
+**Proyecto:** Organizador Inteligente de Tareas (Motor Funcional + Pomodoro + Web & Desktop App)  
+**Última Actualización (Timestamp):** `2026-10-30T23:15:00-06:00`  
 
 ---
 
-## 🛠️ 1. Correcciones y Mejoras en el Código Rust (`proyecto 1/.rs`)
+## 🛠️ 1. Correcciones y Mejoras en el Código Rust (`.rs`)
 
 ### ❌ Errores Identificados en el Código Anterior:
 1. **Sintaxis Incompleta en Firma de Función:** `pub fn nueva {` faltaba paréntesis de argumentos y tipo de retorno `-> Self`.
@@ -64,170 +64,91 @@
   2. `filtrar_por_dificultad(&[Tarea], Dificultad) -> Vec<&Tarea>`: Filtra la colección inmutable según la enum deseada mediante `.iter().filter(...)`.
 
 * **Creación de Ejecutable Equivalente en Python:**
-  * Se construyó el script [`proyecto 1/organizador_tareas.py`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%201/organizador_tareas.py) que réplica la exactitud del motor de Rust utilizando `dataclasses(frozen=True)`, `match/case`, `map`, `filter`, `reduce` y Type Hints.
+  * Se construyó el script [`Pruebas/organizador_tareas.py`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%20semestre/Pruebas/organizador_tareas.py) que réplica la exactitud del motor de Rust utilizando `dataclasses(frozen=True)`, `match/case`, `map`, `filter`, `reduce` y Type Hints.
   * **Verificación de Ejecución:** Probado y ejecutado exitosamente con **100% de aserciones aprobadas (`SUCCESS: All unit tests with assert passed successfully!`)**.
 
 ---
 
-## 📄 2. Actualización de Timestamps en Documentación
-
-* **Archivo [`proyecto.md`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%201/proyecto.md):**  
-  Se actualizó el encabezado de fecha al timestamp unificado:  
-  `**Última Actualización (Timestamp):** 2026-09-17T11:05:26-06:00`
-
----
-
-## 🎯 3. Estado Final de la Carpeta `proyecto 1`
-
-| Archivo | Estado | Descripción |
-|---|---|---|
-| [`proyecto 1/.rs`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%201/.rs) | 🟢 100% Funcional | Código fuente completo en Rust con PF, Iteradores, Pattern Matching y Pruebas Unitarias. |
-| [`proyecto 1/proyecto parcial.md`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%201/proyecto%20parcial.md) | 🟢 Completado | Propuesta técnica detallada del Organizador de Tareas. |
-| [`proyecto 1/proyecto.md`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%201/proyecto.md) | 🟢 Actualizado | Documento de propuesta general con timestamp sincrónico. |
-| [`proyecto 1/resumen_cambios_proyecto.md`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%201/resumen_cambios_proyecto.md) | 🟢 Creado | Registro formal de cambios aplicados a la carpeta. |
-
----
-
-## 🍅 4. Sesión 28-Sep-2026: Implementación Completa de Pomodoro & Mejoras UI
+## 🍅 2. Sesión 28-Sep-2026: Implementación Completa de Pomodoro & Mejoras UI
 
 ### 📂 Archivos Modificados
 
 | Archivo | Tipo de Cambio |
 |---|---|
-| `proyecto semestre/app.js` | ✅ Lógica Pomodoro, alarma, máquina de estados, prioridad de mensajes |
-| `proyecto semestre/style.css` | ✅ Refactorización de formato (sin cambios visuales) |
-| `proyecto semestre/index.html` | ✅ Nuevos botones Pomodoro en el Focus Banner |
-| `proyecto semestre/explicacion_codigo.md` | ✅ Sección 6 añadida con documentación pedagógica |
-| `proyecto semestre/resumen_cambios_proyecto.md` | ✅ Esta sección |
+| `back/app.js` | ✅ Lógica Pomodoro, alarma Web Audio, máquina de estados, prioridad de mensajes |
+| `fron/style.css` | ✅ Refactorización de formato (sin cambios visuales) |
+| `fron/index.html` | ✅ Nuevos botones Pomodoro en el Focus Banner |
+| `docs/explicacion_codigo.md` | ✅ Sección 6 añadida con documentación pedagógica |
+
+### 🔧 Cambios Clave:
+* **Máquina de Estados `focusSession`:** Transición limpia entre fases (`config`, `enfoque`, `descanso`).
+* **Web Audio API:** Generador de tonos duales (880 Hz / 1046 Hz) sin dependencias ni archivos `.mp3` externos.
+* **Separación de Tiempos:** El tiempo de descanso ya no contamina el cálculo de horas reales trabajadas (`segundosEnfoqueAcumulados`).
 
 ---
 
-### 🔧 4.1 Cambios en `app.js`
+## 🧪 3. Sesión 30-Sep-2026: Cobertura de Pruebas Unitarias
 
-#### A. Estado `focusSession` Rediseñado
-
-El objeto que guarda la sesión de enfoque cambió de un cronómetro simple a una **máquina de estados**:
-
-```javascript
-// ANTES
-focusSession = { activa, tarea, segundos, intervalId, enPausa }
-
-// DESPUÉS
-focusSession = {
-    activa, tarea,
-    fase: 'config',         // ← NUEVA: 'config'|'enfoque'|'descanso'
-    segundosEnfoqueAcumulados: 0, // ← NUEVO: solo tiempo real de trabajo
-    segundosRestantes: 0,         // ← NUEVO: cuenta regresiva actual
-    duracionEnfoqueMin: 25,       // ← NUEVO: minutos de trabajo
-    duracionDescansoMin: 10,      // ← NUEVO: minutos de descanso
-    intervalId, enPausa
-}
-```
-
-#### B. Nuevas Funciones Añadidas
-
-| Función | Responsabilidad |
-|---|---|
-| `reproducirAlarma()` | Beep doble con Web Audio API (880 Hz + 1046 Hz), sin archivos externos |
-| `iniciarFaseEnfoque()` | Lee inputs del usuario y arranca la cuenta regresiva de trabajo |
-| `tickearPomodoro()` | Motor del intervalo: descuenta 1s/tick, cambia de fase al llegar a 0 |
-| `iniciarFaseDescanso()` | Activa el countdown de descanso y cambia el color del banner a azul-verde |
-| `finalizarDescanso()` | Detiene el intervalo y muestra el panel de decisión |
-| `reiniciarRondaEnfoque()` | Inicia otra ronda usando los minutos ya configurados |
-
-#### C. Corrección: `abrirModalCompletar` recibe `segundosEnfoqueAcumulados`
-
-Antes se le pasaba `focusSession.segundos` (que incluía tiempo de descanso). Ahora se pasa `focusSession.segundosEnfoqueAcumulados` para que el análisis de eficiencia solo cuente el tiempo real trabajado.
-
-#### D. Prioridad del Mensaje Personal en `actualizarFeedbackModal`
-
-Si el usuario escribió su propio recordatorio, ese texto **sobreescribe** el consejo automático del maestro en el recuadro inferior del modal de completar.
-
-#### E. Listener: input del recordatorio actualiza el feedback en vivo
-
-Se agregó:
-```javascript
-document.getElementById('modal-custom-quote').addEventListener('input', actualizarFeedbackModal);
-```
-Esto hace que el recuadro de abajo se actualice **mientras escribes**, sin necesidad de pulsar ningún botón.
-
-#### F. Tres nuevos listeners de botones Pomodoro
-
-```javascript
-document.getElementById('btn-start-pomodoro').addEventListener('click', iniciarFaseEnfoque);
-document.getElementById('btn-otra-ronda').addEventListener('click', reiniciarRondaEnfoque);
-document.getElementById('btn-finish-after-break').addEventListener('click', () => {
-    abrirModalCompletar(focusSession.tarea.id, focusSession.segundosEnfoqueAcumulados);
-});
-```
+* **Python (`unittest`):** 38 pruebas unitarias formales divididas en 10 grupos temáticos en [`Pruebas/test_organizador.py`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%20semestre/Pruebas/test_organizador.py), validando funciones puras, inmutabilidad y cálculo de score.
+* **Rust (`#[cfg(test)]`):** 12 pruebas unitarias en [`.rs`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%20semestre/.rs) verificando pattern matching, pipelines con iteradores y evaluación funcional.
 
 ---
 
-### 🎨 4.2 Cambios en `style.css` (Solo Formato)
+## ⚡ 4. Sesión Octubre 2026: Migración a Electron, Servidor Web Node.js y Arquitectura Híbrida
 
-Se aplicó una refactorización de estilo en las siguientes reglas. **No se cambió ningún valor visual**:
+### 📂 Archivos Creados y Modificados
 
-* `@keyframes pulse` → cada propiedad en su propia línea
-* `input:focus, select:focus` → selector separado en dos líneas
-* `.diff-X input:checked + span` → eliminado espacio antes de `+`
-* `@keyframes slideDown`, `flamePulse`, `fadeIn`, `scaleUp`, `bounce` → mismo formato multilínea
-* `.task-item.alta/media/baja` → cada regla en bloque separado
-* `.kpi-value.color-pos/neg` → bloques separados
-* `background-image:` en `body` → indentación limpia
-* Al final del archivo se eliminaron líneas en blanco redundantes
-
----
-
-### 🏷️ 4.3 Renombrado de Etiquetas (UX)
-
-| Antes | Después | Razón |
+| Archivo | Tipo de Cambio | Descripción |
 |---|---|---|
-| `💬 Mi Mensaje Motivacional` | `📌 Recordatorio` | Más útil para guardar temas o conceptos |
-| `💬 Mi Mensaje:` (tarjeta) | `📌 Recordatorio:` (tarjeta) | Consistencia visual |
-| `bubble-avatar: 💬` (historial) | `bubble-avatar: 📌` (historial) | Consistencia visual |
+| [`package.json`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%20semestre/package.json) | ✅ Creado en raíz | Configuración del proyecto, dependencias (`electron`, `electron-builder`) y scripts (`start`, `server`, `web`, `dist:win`). |
+| [`main.js`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%20semestre/main.js) | ✅ Creado en raíz | Proceso principal de Electron. Ventana aislada (1280x860), seguridad con contextIsolation y handlers IPC conectados a Node. |
+| [`preload.js`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%20semestre/preload.js) | ✅ Creado en raíz | Puente seguro (`contextBridge`) que expone `electronAPI` (`isElectron`, `notify`, `motor.*`). |
+| [`back/motor.js`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%20semestre/back/motor.js) | ✅ Creado | Motor funcional migrado a módulo CommonJS en Node.js puro (`map`, `filter`, `reduce`, algoritmos de prioridad y racha). |
+| [`back/server.js`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%20semestre/back/server.js) | ✅ Creado | Servidor HTTP nativo en Node.js con API REST (`/api/tareas`, `/api/analisis`) y servidor estático para Web App. |
+| [`back/app.js`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%20semestre/back/app.js) | ✅ Actualizado | Detección de entorno Electron vs Web, disparo de notificaciones de sistema operativo y tag dinámico. |
+| [`fron/index.html`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%20semestre/fron/index.html) | ✅ Actualizado | Limpieza de referencias, enlace al script del backend y compatibilidad completa con navegador y ventana Electron. |
+| [`.gitignore`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%20semestre/.gitignore) | ✅ Actualizado | Protección contra versionado de `node_modules/`, `dist/` y logs. |
+| [`docs/README.md`](file:///c:/Users/melvi/Documents/antigravity/charming-borg/progrmacion_funcional/proyecto%20semestre/docs/README.md) | ✅ Actualizado | Guía paso a paso para ejecutar como Web App en navegador, Desktop App con Electron o Servidor Node. |
 
 ---
 
-### 🎯 4.4 Estado Final de Archivos del Proyecto Semestre
+## 🚀 5. Listado y Clasificación por Nivel de Prototipo
 
-| Archivo | Estado | Descripción |
-|---|---|---|
-| `app.js` | 🟢 Actualizado | Motor Pomodoro completo, alarma, máquina de estados |
-| `style.css` | 🟢 Actualizado | Formato moderno, sin cambios visuales |
-| `index.html` | 🟢 Actualizado | Botones Pomodoro: iniciar, otra ronda, terminar después del descanso |
-| `explicacion_codigo.md` | 🟢 Actualizado | Sección 6 con explicación pedagógica de todos los cambios |
-| `resumen_cambios_proyecto.md` | 🟢 Actualizado | Esta sección (4) |
+Para contextualizar el grado de madurez del proyecto según los estándares de ingeniería de software (Nivel de Madurez Tecnológica / TRL y fases de prototipado):
+
+| Componente | Nivel de Prototipo | TRL Estimado | Estado Actual | Justificación Técnica |
+|---|---|:---:|:---:|---|
+| **Motor Matemático en Rust (`.rs`)** | **Prototipo Funcional / Alfa** | TRL 4 | 🟢 Concluido | Modelo formal de evaluación matemática pura con 12 tests unitarios pasando, iteradores y pattern matching. |
+| **Suite de Pruebas en Python (`Pruebas/`)** | **Prototipo de Validación / Beta** | TRL 5 | 🟢 Concluido | 38 aserciones unitarias automatizadas que comprueban reproducibilidad y transparencia referencial del algoritmo. |
+| **Frontend Web Interactivo (`fron/`)** | **Prototipo Avanzado (Alta Fidelidad)** | TRL 6 | 🟢 Concluido | UI responsiva con modo claro/oscuro, Pomodoro activo, Web Audio API, persistencia en `localStorage` y modales dinámicos. |
+| **Backend & API REST Node.js (`back/`)** | **Prototipo Operativo (Beta)** | TRL 6 | 🟢 Concluido | Servidor HTTP nativo (`server.js`) con endpoints REST funcionales, persistencia JSON y exportación modular de funciones puras (`motor.js`). |
+| **Aplicación de Escritorio Electron (`main.js` + `preload.js`)** | **Prototipo Pre-Producción (Release Candidate)** | TRL 7 | 🟢 Concluido | Ejecución de escritorio aislada con IPC seguro, notificaciones nativas de Windows/macOS y empaquetado portable listo (`electron-builder`). |
+
+### 📊 Resumen de Madurez Global del Proyecto:
+* **Estado Global:** **Prototipo Funcional de Alta Fidelidad / Pre-Producción (TRL 6 - 7)**.
+* **Capacidad:** Ejecutable indistintamente en navegador web estándar, cliente servidor HTTP local o binario nativo de escritorio para Windows.
 
 ---
 
-## 🧪 5. Sesión 30-Sep-2026: Cobertura de Pruebas Unitarias
+## 📌 6. Propuesta de Commit de Git (Avances del Proyecto)
 
-### 📂 Archivos Modificados / Creados
+A continuación se detalla el commit estructurado con formato estándar (*Conventional Commits*) que documenta todos los hitos y avances alcanzados:
 
-| Archivo | Tipo de Cambio |
-|---|---|
-| `proyecto semestre/test_organizador.py` | ✅ Creado | Suite completa de pruebas unitarias en Python. |
-| `proyecto semestre/.rs` | ✅ Actualizado | Módulo de pruebas completo añadido al final del archivo. |
-| `proyecto semestre/explicacion_codigo.md` | ✅ Actualizado | Sección 7 añadida con documentación sobre pruebas. |
-| `proyecto semestre/resumen_cambios_proyecto.md` | ✅ Actualizado | Esta sección (5) |
+```git
+commit: feat(core): migración completa a arquitectura híbrida con Electron y backend Node.js
 
-### 🔧 5.1 Pruebas en Python (`unittest`)
+- Integración de Electron 33+:
+  * Configuración de main.js con ventana nativa de escritorio y preload.js con contextBridge seguro.
+  * Añadida compatibilidad con notificaciones del sistema operativo y detección de runtime.
+  * Configurado empaquetador electron-builder para generar ejecutable portable de Windows.
 
-Se crearon **25 pruebas unitarias** utilizando la librería estándar `unittest`, cubriendo las 6 funciones puras principales.
+- Migración y Refactorización del Backend a Node.js:
+  * Creación de back/motor.js con funciones puras y pipeline funcional en formato CommonJS.
+  * Implementación de back/server.js con servidor HTTP nativo y endpoints REST (/api/tareas, /api/analisis).
+  * Soporte de persistencia en tareas_db.json manteniendo compatibilidad con localStorage en frontend.
 
-- **`obtener_peso_dificultad`**: 5 tests comprobando la asignación de pesos (`Alta=3.0`, `Media=2.0`, `Baja=1.0`).
-- **`calcular_prioridad`**: 5 tests comprobando la matemática de la fórmula (comprobando urgencias, holguras, y el valor por defecto).
-- **`generar_razon`**: 4 tests para probar que los mensajes corresponden a los umbrales de score y días restantes.
-- **`procesar_y_priorizar`**: 4 tests comprobando que la salida está correctamente ordenada (mayor score primero).
-- **`calcular_tiempo_total_estimado`**: 3 tests verificando el comportamiento de `reduce` (suma acumulada).
-- **`filtrar_por_dificultad`**: 4 tests validando el comportamiento de `filter` al filtrar listas según Dificultad.
-
-### 🦀 5.2 Pruebas en Rust (`#[cfg(test)]`)
-
-Se añadió un módulo de pruebas exhaustivo (`mod tests`) con `use super::*;`.
-
-- Se crearon **12 pruebas unitarias** divididas en 4 grupos.
-- Comprobación del pattern matching (`obtener_peso_dificultad`).
-- Tests de cálculo matemático comprobando divisiones con decimales (`calcular_prioridad`).
-- Tests para generación de string condicionales (`generar_razon`).
-- Tests de integración del pipeline completo de Iteradores (`procesar_y_priorizar`), con validación de mutabilidad y de `.unwrap_or()`.
+- Frontend y Documentación:
+  * Soporte dual operativo (ejecución directa en navegador, vía servidor Node o en ventana Electron).
+  * Limpieza y organización de package.json en la raíz del repositorio.
+  * Actualización de docs/README.md y docs/resumen_cambios_proyecto.md con niveles de prototipo.
+```
