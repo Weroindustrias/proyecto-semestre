@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain, shell, Notification } = require('electron');
 const path = require('path');
+const fs = require('fs');
 
 let mainWindow = null;
 
@@ -21,7 +22,9 @@ function createWindow() {
         show: false
     });
 
-    const indexPath = path.join(__dirname, 'fron', 'index.html');
+    const indexPath = fs.existsSync(path.join(__dirname, 'fron', 'index.html'))
+        ? path.join(__dirname, 'fron', 'index.html')
+        : path.join(__dirname, '..', 'fron', 'index.html');
     mainWindow.loadFile(indexPath);
 
     mainWindow.once('ready-to-show', () => {
@@ -58,7 +61,9 @@ app.on('window-all-closed', () => {
 });
 
 // Integrar el motor funcional de Node directamente en el proceso principal
-const motor = require('./back/motor');
+const motor = fs.existsSync(path.join(__dirname, 'motor.js'))
+    ? require('./motor')
+    : require('./back/motor');
 
 // IPC Handlers para funciones del sistema nativo
 ipcMain.handle('app:get-version', () => app.getVersion());

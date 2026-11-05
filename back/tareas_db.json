@@ -1,0 +1,32 @@
+{
+  "pendientes": [
+    {
+      "id": "1",
+      "nombre": "Examen Final de POO",
+      "materia": "Programación Orientada a Objetos",
+      "diasRestantes": 1,
+      "dificultad": "Alta",
+      "horasEstimadas": 4,
+      "mensajeMotivacional": "¡Repasar herencia y polimorfismo con enfoque total!"
+    },
+    {
+      "id": "2",
+      "nombre": "Proyecto Engine Generativo",
+      "materia": "Programación Funcional",
+      "diasRestantes": 3,
+      "dificultad": "Media",
+      "horasEstimadas": 6,
+      "mensajeMotivacional": "¡Una sola función pura a la vez sin efectos secundarios!"
+    },
+    {
+      "id": "3",
+      "nombre": "Investigación de Electrostática",
+      "materia": "Física",
+      "diasRestantes": 5,
+      "dificultad": "Baja",
+      "horasEstimadas": 2,
+      "mensajeMotivacional": "¡Resolver los ejercicios de campos eléctricos paso a paso!"
+    }
+  ],
+  "completadas": []
+}

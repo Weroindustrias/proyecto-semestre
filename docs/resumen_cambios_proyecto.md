@@ -152,3 +152,34 @@ commit: feat(core): migración completa a arquitectura híbrida con Electron y b
   * Limpieza y organización de package.json en la raíz del repositorio.
   * Actualización de docs/README.md y docs/resumen_cambios_proyecto.md con niveles de prototipo.
 ```
+
+
+---
+
+## 🧩 7. Sesión Noviembre 2026: Modularización por Dominios y Migración de Frontend a React
+
+### 📂 Archivos Creados y Modificados
+
+| Archivo / Carpeta | Tipo de Cambio | Descripción |
+|---|---|---|
+| `back/dominio1/maestros.js` | ✅ Creado | **Dominio 1:** Base pedagógica inmutable de profesores y función pura `obtenerMaestro`. |
+| `back/dominio1/estado.js` | ✅ Creado | **Dominio 1:** Estado inicial de tareas y utilidades puras de persistencia en `localStorage`. |
+| `back/dominio1/priorizacion.js` | ✅ Creado | **Dominio 1:** Funciones puras de cálculo de prioridad, peso y pipeline `procesarYPriorizar`. |
+| `back/dominio2_estadis/metricas.js` | ✅ Creado | **Dominio 2:** Funciones de alto orden (`reduce`, `filter`, `map`) para conteo y materias. |
+| `back/dominio2_estadis/analisisEnfoque.js` | ✅ Creado | **Dominio 2:** Pipeline de análisis diagnóstico y cálculo de eficiencia global. |
+| `back/dominio2_estadis/prediccion.js` | ✅ Creado | **Dominio 2:** Predicción inteligente de tiempo basada en historial. |
+| `back/dominio2_estadis/rachaMapa.js` | ✅ Creado | **Dominio 2:** Algoritmo de racha consecutiva y generación declarativa del mapa de calor (Heatmap). |
+| `back/dominio2_estadis/logros.js` | ✅ Creado | **Dominio 2:** Sistema de gamificación e insignias desbloqueables permanentes. |
+| `back/dominio2_estadis/graficasEficiencia.js` | ✅ Creado | **Dominio 2:** Gráfica comparativa de barras divergentes en SVG puro. |
+| `back/dominio3_pomodoro/notificaciones.js` | ✅ Creado | **Dominio 3:** Web Audio API (alarma dual 880/1046 Hz), notificaciones y formateo de tiempo. |
+| `back/dominio3_pomodoro/focusPomodoro.js` | ✅ Creado | **Dominio 3:** Máquina de estados Pomodoro (`config`, `enfoque`, `descanso`, `decision`). |
+| `back/dominio4_interfaz/modalCompletar.js` | ✅ Creado | **Dominio 4:** Modal interactivo para registrar tiempo real vs planeado. |
+| `back/dominio4_interfaz/flashcards.js` | ✅ Creado | **Dominio 4:** Sistema interactivo de flashcards para repaso de conceptos. |
+| `back/dominio4_interfaz/modalesHoras.js` | ✅ Creado | **Dominio 4:** Controladores de apertura y cierre de modales de análisis. |
+| `back/dominio4_interfaz/renderApp.js` | ✅ Creado | **Dominio 4:** Renderizado declarativo y actualización de selectores en interfaz. |
+| `back/app.js` | ⚡ Refactorizado | Reducido de 1,669 a ~280 líneas limpias como orquestador central que enlaza los dominios. |
+| `fron/index.html` | ⚛️ Migrado | Migrado a punto de montaje React 18 con carga reactiva y fallback offline. |
+| `fron/index_vanilla.html` | 🛡️ Creado | Respaldo del frontend vanilla original 100% funcional conectado a los nuevos dominios. |
+| `fron/src/App.jsx` | ⚛️ Creado | Componente principal React con gestión de estado global y tema claro/oscuro. |
+| `fron/src/components/*` | ⚛️ Creado | Componentes modulares (`Header`, `TaskForm`, `FocusBanner`, `TaskList`, `TaskCard`, modales). |
+| `fron/src/hooks/*` | ⚛️ Creado | Custom hooks funcionales (`useTasks`, `usePomodoro`) desacoplados de la vista. |

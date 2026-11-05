@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Organizador Inteligente de Tareas | Programación Funcional</title>
+    <title>Organizador Inteligente de Tareas | React + Programación Funcional</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,405 +24,61 @@
             }
         })();
     </script>
+
+    <!-- Import Map para React 18 nativo en Navegador & Electron -->
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18.3.1",
+            "react/": "https://esm.sh/react@18.3.1/",
+            "react-dom": "https://esm.sh/react-dom@18.3.1",
+            "react-dom/client": "https://esm.sh/react-dom@18.3.1/client"
+        }
+    }
+    </script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 
 <body>
-    <div class="app-container">
-        <!-- Header -->
-        <header class="main-header">
-            <div class="logo-area">
-                <div class="logo-badge">⚡ PF</div>
-                <div>
-                    <h1>Organizador Inteligente de Tareas</h1>
-                    <p class="subtitle">Programacion Funcional en Rust & JS | ICI - FIME UdeC</p>
+    <!-- Punto de Montaje de la Aplicación React -->
+    <div id="root">
+        <div
+            style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh; color:var(--text-primary); font-family:var(--font-main);">
+            <div style="font-size:3rem; margin-bottom:1rem; animation: pulse 1.5s infinite;">⚡</div>
+            <h2 style="margin-bottom:0.5rem;">Cargando Organizador Inteligente en React...</h2>
+            <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1.5rem;">Inicializando componentes
+                funcionales y base pedagógica</p>
+            <noscript>
+                <div
+                    style="padding:1rem 1.5rem; background:rgba(239,68,68,0.15); border:1px solid #ef4444; border-radius:12px;">
+                    Se requiere JavaScript para ejecutar la aplicación. También puedes abrir <a
+                        href="index_vanilla.html" style="color:#38bdf8;">index_vanilla.html</a>.
                 </div>
-            </div>
-            <div class="header-right-group">
-                <!-- Botón para alternar entre modo claro (post-its) y modo oscuro (original) -->
-                <button type="button" class="btn-theme-toggle" id="btn-theme-toggle" title="Cambiar entre modo claro y modo oscuro">
-                    <span id="theme-toggle-icon">🌙</span>
-                    <span id="theme-toggle-label">Modo Oscuro</span>
-                </button>
-                <div class="header-tag">
-                    <span class="pulse-dot"></span>
-                    <span>Paradigma Declarativo</span>
-                </div>
-                <!-- Botón de la página para abrir el apartado de horas realizadas -->
-                <button type="button" class="btn-ver-horas" id="btn-open-horas-modal" title="Abrir apartado de horas que dio en realizar y análisis">
-                    <span class="btn-icon">⏱️</span>
-                    <span>Ver Horas Realizadas & Análisis</span>
-                    <span class="badge-horas-count" id="header-badge-completadas">0</span>
-                </button>
-                <!-- Botón para repasar tus Recordatorios en modo flashcards -->
-                <button type="button" class="btn-ver-horas btn-flashcards" id="btn-open-flashcards" title="Repasar tus recordatorios de temas/conceptos">
-                    <span class="btn-icon">📚</span>
-                    <span>Repasar Recordatorios</span>
-                </button>
-            </div>
-        </header>
-
-        <!-- Main Grid Layout -->
-        <main class="dashboard-grid">
-            <!-- Left Panel: Task Input Form -->
-            <section class="glass-card form-section">
-                <div class="card-header">
-                    <span class="icon">📝</span>
-                    <h2>Agregar Nueva Tarea</h2>
-                </div>
-                <form id="task-form" autocomplete="off">
-                    <div class="form-group">
-                        <label for="task-name">Nombre de la Tarea</label>
-                        <input type="text" id="task-name" placeholder="Ej. Examen de POO, Proyecto Final..." required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="materia-select">Materia</label>
-                        <div class="select-wrapper">
-                            <select id="materia-select" required>
-                                <option value="" disabled selected>Selecciona una materia...</option>
-                                <option value="Programación Funcional">Programación Funcional</option>
-                                <option value="Física">Física</option>
-                                <option value="Programación Orientada a Objetos">Programación Orientada a Objetos</option>
-                                <option value="Cálculo Diferencial">Cálculo Diferencial</option>
-                                <option value="custom">+ Agregar otra materia...</option>
-                            </select>
-                        </div>
-                        <input type="text" id="custom-materia" class="custom-materia-input hidden"
-                            placeholder="Escribe el nombre de la materia...">
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="dias-restantes">Días Restantes para Entrega</label>
-                            <input type="number" id="dias-restantes" min="0" max="365" placeholder="Ej. 2" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="horas-estimadas">Horas Estimadas de Trabajo</label>
-                            <input type="number" id="horas-estimadas" min="1" max="100" placeholder="Ej. 4" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nivel de Dificultad</label>
-                        <div class="difficulty-options">
-                            <label class="diff-btn diff-baja">
-                                <input type="radio" name="dificultad" value="Baja" required>
-                                <span>🌱 Baja (1.0)</span>
-                            </label>
-                            <label class="diff-btn diff-media">
-                                <input type="radio" name="dificultad" value="Media" checked>
-                                <span>⚖️ Media (2.0)</span>
-                            </label>
-                            <label class="diff-btn diff-alta">
-                                <input type="radio" name="dificultad" value="Alta">
-                                <span>🔥 Alta (3.0)</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Predicción de tiempo basada en tu historial (Idea 1) -->
-                    <div class="prediction-box hidden" id="prediction-box">
-                        <span class="prediction-icon">📊</span>
-                        <span id="prediction-text"></span>
-                    </div>
-
-                    <!-- Recordatorio de tema/concepto puesto por Melvin -->
-                    <div class="form-group">
-                        <label for="task-quote">📌 Recordatorio <span class="label-sub">(un tema o concepto que también quieras repasar)</span></label>
-                        <input type="text" id="task-quote" placeholder="Ej. Recordatorio: también repasar qué es la recursividad">
-                    </div>
-
-                    <button type="submit" class="btn-primary">
-                        <span>✨ Agregar y Reorganizar Agenda</span>
-                    </button>
-                </form>
-            </section>
-
-            <!-- Right Panel: Prioritized Tasks (Limpio al iniciar) -->
-            <section class="results-section">
-                <!-- Active Focus Session Banner (Dynamically shown only when timer is running) -->
-                <div id="focus-banner" class="glass-card focus-banner hidden" style="display: none;">
-                    <div class="focus-header">
-                        <div class="focus-title-group">
-                            <span class="focus-pulse-icon" id="focus-phase-icon">🔥</span>
-                            <div>
-                                <span class="focus-badge" id="focus-phase-badge">SESIÓN DE ENFOQUE EN VIVO</span>
-                                <h3 id="focus-task-name">Nombre de la tarea activa</h3>
-                                <p id="focus-task-meta" class="focus-meta">Materia • Estimado: 2 hrs</p>
-                            </div>
-                        </div>
-                        <div class="focus-timer-box">
-                            <div class="timer-display" id="focus-timer-clock">00:00:00</div>
-                            <span class="timer-sub" id="focus-timer-sub">Tiempo transcurrido</span>
-                        </div>
-                    </div>
-
-                    <!-- Configuración Pomodoro: el usuario elige sus minutos de enfoque y descanso -->
-                    <div class="focus-config-row" id="focus-config-row">
-                        <div class="focus-config-item">
-                            <label for="focus-work-minutes">⏳ Minutos de Enfoque</label>
-                            <input type="number" id="focus-work-minutes" min="5" max="120" value="25">
-                        </div>
-                        <div class="focus-config-item">
-                            <label for="focus-break-minutes">☕ Minutos de Descanso</label>
-                            <input type="number" id="focus-break-minutes" min="1" max="60" value="10">
-                        </div>
-                        <button type="button" class="btn-focus-start" id="btn-start-pomodoro">
-                            <span>🚀 Iniciar Pomodoro</span>
-                        </button>
-                    </div>
-
-                    <!-- Live Motivation Bubble -->
-                    <div class="teacher-live-quote">
-                        <div class="teacher-avatar" id="focus-teacher-avatar">💬</div>
-                        <div class="teacher-quote-content">
-                            <strong id="focus-teacher-name">Tu Recordatorio</strong>
-                            <p id="focus-teacher-quote">«¡Enfoque total y mente despejada!»</p>
-                        </div>
-                    </div>
-
-                    <!-- Panel de decisión que aparece cuando termina el descanso -->
-                    <div class="focus-decision-row hidden" id="focus-decision-row">
-                        <p class="focus-decision-text">☕ ¡Descanso terminado! ¿Qué sigue?</p>
-                        <div class="focus-decision-btns">
-                            <button type="button" class="btn-focus-toggle" id="btn-otra-ronda">
-                                <span>🔁 Otra Ronda de Enfoque</span>
-                            </button>
-                            <button type="button" class="btn-focus-complete" id="btn-finish-after-break">
-                                <span>✅ Completar Tarea</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="focus-actions" id="focus-actions-row">
-                        <button type="button" class="btn-focus-complete" id="btn-finish-focus">
-                            <span>✅ ¡Completar Tarea! (Terminé antes / Listo)</span>
-                        </button>
-                        <button type="button" class="btn-focus-toggle" id="btn-pause-focus">
-                            <span>⏸️ Pausar</span>
-                        </button>
-                        <button type="button" class="btn-focus-cancel" id="btn-cancel-focus">
-                            <span>✕ Cancelar</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Main Tasks Card (Visible al entrar) -->
-                <div class="glass-card tasks-card">
-                    <div class="card-header space-between filter-bar">
-                        <div class="title-group">
-                            <span class="icon">⚡</span>
-                            <h2>Tareas Priorizadas por Dificultad y Entrega</h2>
-                            <span class="badge-total-pendientes" id="badge-total-pendientes">0 pendientes</span>
-                        </div>
-                        <div class="header-filter-row">
-                            <div class="filter-controls">
-                                <select id="filter-materia">
-                                    <option value="all">Todas las materias</option>
-                                </select>
-                            </div>
-                            <button type="button" class="btn-secondary btn-quick-horas" id="btn-quick-horas-link" title="Ver horas realizadas">
-                                ⏱️ Horas Realizadas (<span id="quick-horas-count">0</span>)
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="tasks-list" class="tasks-list-container">
-                        <!-- Tasks dynamically injected by JS engine -->
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- MODAL DEDICADO: APARTADO DE HORAS REALIZADAS & ANÁLISIS (Se abre SOLO con el botón) -->
-    <div id="modal-horas-realizadas" class="modal-overlay hidden" style="display: none;">
-        <div class="modal-card modal-horas-card glass-card">
-            <div class="modal-header space-between">
-                <div class="modal-title-group">
-                    <span class="modal-emoji">⏱️</span>
-                    <div>
-                        <h3>Apartado de Horas Realizadas & Análisis</h3>
-                        <p class="modal-sub">Historial del tiempo real invertido, logros y evaluación de enfoque</p>
-                    </div>
-                </div>
-                <button type="button" class="btn-close-modal" id="btn-close-horas-modal" title="Cerrar ventana">✕</button>
-            </div>
-
-            <!-- Stats Bar interna del Modal -->
-            <div class="stats-bar modal-stats-bar">
-                <div class="stat-card">
-                    <span class="stat-value" id="modal-stat-completadas">0</span>
-                    <span class="stat-label">Tareas Realizadas</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-value" id="modal-stat-horas-reales">0 hrs</span>
-                    <span class="stat-label">Horas Invertidas (Reales)</span>
-                </div>
-                <div class="stat-card stat-completadas">
-                    <span class="stat-value" id="modal-stat-tiempo-ahorrado">0 hrs</span>
-                    <span class="stat-label">Tiempo Ahorrado (Antes)</span>
-                </div>
-                <div class="stat-card stat-enfoque">
-                    <span class="stat-value" id="modal-stat-eficiencia">+0%</span>
-                    <span class="stat-label">Eficiencia de Enfoque</span>
-                </div>
-            </div>
-
-            <!-- Tabs internas del Modal -->
-            <div class="modal-tabs-nav">
-                <button type="button" class="modal-tab-btn active" data-modaltab="historial" id="modal-tab-historial">
-                    <span>🏆 Tareas Realizadas y Tiempo Dedicado</span>
-                </button>
-                <button type="button" class="modal-tab-btn" data-modaltab="analisis" id="modal-tab-analisis">
-                    <span>📈 Diagnóstico de Rendimiento</span>
-                </button>
-                <button type="button" class="modal-tab-btn" data-modaltab="racha" id="modal-tab-racha">
-                    <span>🔥 Racha & Mapa de Enfoque</span>
-                </button>
-            </div>
-
-            <div class="modal-body-scroll">
-                <!-- VISTA A: Historial de Tareas Realizadas -->
-                <div id="modal-view-historial" class="modal-tab-view active">
-                    <div class="card-header space-between">
-                        <span class="section-subtitle">Detalle de cada tarea, horas estimadas vs. tiempo real medido:</span>
-                        <button type="button" class="btn-clear-completed" id="btn-clear-history" title="Limpiar historial">
-                            🗑️ Limpiar historial
-                        </button>
-                    </div>
-                    <div id="completed-list" class="tasks-list-container">
-                        <!-- Inyectado dinámicamente -->
-                    </div>
-                </div>
-
-                <!-- VISTA B: Análisis de Enfoque -->
-                <div id="modal-view-analisis" class="modal-tab-view hidden">
-                    <div id="analysis-dashboard" class="analysis-container">
-                        <!-- Inyectado dinámicamente -->
-                    </div>
-                </div>
-
-                <!-- VISTA C: Racha & Mapa de Calor (Ideas 3 y 4) -->
-                <div id="modal-view-racha" class="modal-tab-view hidden">
-                    <div id="racha-dashboard" class="analysis-container">
-                        <!-- Inyectado dinámicamente -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal-actions">
-                <button type="button" class="btn-primary" id="btn-close-horas-footer">
-                    <span>← Regresar al Organizador</span>
-                </button>
+            </noscript>
+            <div id="offline-fallback"
+                style="display:none; margin-top:1rem; padding:1rem 1.5rem; background:rgba(56,189,248,0.1); border:1px solid var(--accent-blue); border-radius:12px; text-align:center;">
+                <p style="margin:0 0 0.5rem 0;">¿Estás ejecutando sin conexión a internet?</p>
+                <a href="index_vanilla.html" class="btn-primary"
+                    style="display:inline-block; text-decoration:none; padding:8px 16px;">
+                    Abrir versión directa sin conexión (index_vanilla.html)
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Tarea Completada: Registro de Horas que dio en realizar & Mensaje Motivacional propio -->
-    <div id="complete-modal" class="modal-overlay hidden" style="display: none;">
-        <div class="modal-card glass-card">
-            <div class="modal-header">
-                <span class="modal-emoji">🎉</span>
-                <h3 id="modal-task-title">Registrar Horas Realizadas</h3>
-            </div>
-            
-            <div class="modal-body">
-                <p id="modal-task-info" class="modal-sub">Materia • Estimado inicial: 2 hrs</p>
-                
-                <div class="time-input-section">
-                    <label for="modal-time-hours">¿Cuántas horas te dio en realizar esta tarea?:</label>
-                    <div class="time-inputs-row">
-                        <div class="time-input-col">
-                            <input type="number" id="modal-time-hours" min="0" max="99" value="0">
-                            <span>horas</span>
-                        </div>
-                        <div class="time-input-col">
-                            <input type="number" id="modal-time-minutes" min="0" max="59" value="30">
-                            <span>minutos</span>
-                        </div>
-                    </div>
-                </div>
+    <!-- Script de detección de carga / fallback offline -->
+    <script>
+        setTimeout(function () {
+            var rootEl = document.getElementById('root');
+            if (rootEl && (!rootEl.firstElementChild || rootEl.firstElementChild.id !== 'app-container')) {
+                var fallbackBox = document.getElementById('offline-fallback');
+                if (fallbackBox) fallbackBox.style.display = 'block';
+            }
+        }, 3500);
+    </script>
 
-                <div id="modal-diff-feedback" class="feedback-badge-box">
-                    <!-- Feedback calculado: si terminaste antes de tiempo o a tiempo -->
-                </div>
-
-                <!-- Recordatorio de tema/concepto que Melvin quiere poner -->
-                <div class="user-quote-input-group">
-                    <label for="modal-custom-quote">📌 Tu Recordatorio <span class="label-sub">(un tema, concepto o nota que quieras dejar)</span></label>
-                    <input type="text" id="modal-custom-quote" placeholder="Ej. Recordatorio: también repasar bucles for y while">
-                </div>
-
-                <!-- Teacher Motivational Card (Sugerencia opcional) -->
-                <div class="teacher-congrats-card" id="modal-teacher-suggestion-card">
-                    <div class="teacher-congrats-avatar" id="modal-teacher-avatar">⚡</div>
-                    <div>
-                        <strong id="modal-teacher-title">Consejo del Maestro:</strong>
-                        <p id="modal-teacher-quote">«¡Excelente concentración!»</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal-actions">
-                <button type="button" class="btn-secondary" id="modal-btn-cancel" onclick="cerrarModalCompletar()">Regresar</button>
-                <button type="button" class="btn-primary" id="modal-btn-confirm" onclick="confirmarCompletarTarea()">
-                    <span>🏆 Guardar Horas Realizadas</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de Flashcards: Repaso de Recordatorios (Idea 2) -->
-    <div id="modal-flashcards" class="modal-overlay hidden" style="display: none;">
-        <div class="modal-card glass-card modal-flashcards-card">
-            <div class="modal-header space-between">
-                <div class="modal-title-group">
-                    <span class="modal-emoji">📚</span>
-                    <div>
-                        <h3>Repaso de Recordatorios</h3>
-                        <p class="modal-sub">Los temas y conceptos que fuiste guardando en tus tareas</p>
-                    </div>
-                </div>
-                <button type="button" class="btn-close-modal" id="btn-close-flashcards">✕</button>
-            </div>
-
-            <div class="modal-body">
-                <div id="flashcard-empty" class="flashcard-empty hidden">
-                    <p>Todavía no tienes ningún Recordatorio guardado. Agrega uno al crear o completar una tarea.</p>
-                </div>
-
-                <div id="flashcard-content">
-                    <p class="flashcard-counter" id="flashcard-contador">0 / 0</p>
-                    <div class="flashcard-wrapper" id="btn-flip-flashcard">
-                        <div class="flashcard-inner" id="flashcard-inner">
-                            <div class="flashcard-face flashcard-front">
-                                <span class="flashcard-hint">Tarea</span>
-                                <p id="flashcard-front-text">Materia — Nombre de la tarea</p>
-                                <span class="flashcard-tap-hint">👆 Toca para ver el recordatorio</span>
-                            </div>
-                            <div class="flashcard-face flashcard-back">
-                                <span class="flashcard-hint">📌 Recordatorio</span>
-                                <p id="flashcard-back-text">Aquí aparece tu recordatorio</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flashcard-nav">
-                        <button type="button" class="btn-secondary" id="btn-prev-flashcard">⬅️ Anterior</button>
-                        <button type="button" class="btn-secondary" id="btn-next-flashcard">Siguiente ➡️</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal-actions">
-                <button type="button" class="btn-primary" id="btn-close-flashcards-footer">
-                    <span>← Regresar al Organizador</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <script src="../back/app.js?v=20260925-1"></script>
+    <!-- Carga del Componente Raíz de React -->
+    <script type="text/babel" data-type="module" src="./src/main.jsx"></script>
 </body>
 
 </html>
