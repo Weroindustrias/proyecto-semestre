@@ -5,13 +5,13 @@
 // Estudiante: Melvin Jaeen García Camacho
 // ============================================================================
 
-import { procesarYPriorizar } from '../dominio1/priorizacion.js';
+import { procesarYPriorizar } from '../tareas.y.planificador/priorizacion.js';
 import { obtenerMateriasUnicas } from '../dominio2_estadis/metricas.js';
 import { analizarEnfoqueFuncional } from '../dominio2_estadis/analisisEnfoque.js';
 import { calcularRacha, generarMapaCalorHTML } from '../dominio2_estadis/rachaMapa.js';
 import { DEFINICION_LOGROS, actualizarLogrosDesbloqueados } from '../dominio2_estadis/logros.js';
 import { calcularComparacionMaterias, generarGraficaMateriasHTML } from '../dominio2_estadis/graficasEficiencia.js';
-import { MAESTROS } from '../dominio1/maestros.js';
+import { MAESTROS } from '../tareas.y.planificador/maestros.js';
 
 export const actualizarFiltroMaterias = (tareasState = [], tareasCompletadasState = []) => {
     const filterSelect = document.getElementById('filter-materia');
@@ -32,8 +32,8 @@ export const renderAppDeclarativo = ({ tareasState, tareasCompletadasState, focu
     const selectedFilter = filterMateriaSelect ? filterMateriaSelect.value : 'all';
 
     // 1. Filtrado declarativo por materia
-    const tareasFiltradas = selectedFilter === 'all' 
-        ? tareasState 
+    const tareasFiltradas = selectedFilter === 'all'
+        ? tareasState
         : tareasState.filter(t => t.materia === selectedFilter);
 
     // 2. Procesar agenda priorizada con pipeline funcional
@@ -158,11 +158,11 @@ export const renderAppDeclarativo = ({ tareasState, tareasCompletadasState, focu
             `;
         } else {
             completedContainer.innerHTML = tareasCompletadasState.map(t => {
-                const ahorroTexto = t.minutosAhorrados > 0 
+                const ahorroTexto = t.minutosAhorrados > 0
                     ? `<span class="badge-saving">⚡ Ahorraste ${t.minutosAhorrados} min (+${t.eficienciaPorcentaje}% enfoque)</span>`
                     : (t.minutosAhorrados === 0 ? `<span class="badge-ontime">🎯 A tiempo exacto</span>` : `<span class="badge-extra-time">💪 +${Math.abs(t.minutosAhorrados)} min dedicados</span>`);
 
-                const horasStr = t.minutosReales >= 60 
+                const horasStr = t.minutosReales >= 60
                     ? `${Math.floor(t.minutosReales / 60)}h ${t.minutosReales % 60}m`
                     : `${t.minutosReales} min`;
 
@@ -265,12 +265,12 @@ export const renderAppDeclarativo = ({ tareasState, tareasCompletadasState, focu
                 
                 <div class="masters-grid">
                     ${Object.keys(MAESTROS).filter(k => k !== 'default').map(key => {
-                        const m = MAESTROS[key];
-                        const tareasMateria = tareasCompletadasState.filter(t => t.materia === key);
-                        const tieneCompletadas = tareasMateria.length > 0;
-                        const ahorroMateria = tareasMateria.reduce((acc, t) => acc + Math.max(0, t.minutosAhorrados), 0);
+            const m = MAESTROS[key];
+            const tareasMateria = tareasCompletadasState.filter(t => t.materia === key);
+            const tieneCompletadas = tareasMateria.length > 0;
+            const ahorroMateria = tareasMateria.reduce((acc, t) => acc + Math.max(0, t.minutosAhorrados), 0);
 
-                        return `
+            return `
                             <div class="master-card glass-card ${tieneCompletadas ? 'active-master' : ''}">
                                 <div class="master-card-header">
                                     <span class="master-avatar">${m.avatar}</span>
@@ -286,7 +286,7 @@ export const renderAppDeclarativo = ({ tareasState, tareasCompletadasState, focu
                                 </div>
                             </div>
                         `;
-                    }).join('')}
+        }).join('')}
                 </div>
             </div>
         `;
@@ -339,8 +339,8 @@ export const renderAppDeclarativo = ({ tareasState, tareasCompletadasState, focu
                 <p class="section-subtitle">Cada insignia se desbloquea sola conforme avanzas; se queda guardada aunque borres tu historial.</p>
                 <div class="logros-grid">
                     ${DEFINICION_LOGROS.map(logro => {
-                        const desbloqueada = logrosDesbloqueados.includes(logro.id);
-                        return `
+            const desbloqueada = logrosDesbloqueados.includes(logro.id);
+            return `
                             <div class="logro-card ${desbloqueada ? 'logro-desbloqueado' : 'logro-bloqueado'}">
                                 <span class="logro-icono">${desbloqueada ? logro.icono : '🔒'}</span>
                                 <div class="logro-info">
@@ -349,7 +349,7 @@ export const renderAppDeclarativo = ({ tareasState, tareasCompletadasState, focu
                                 </div>
                             </div>
                         `;
-                    }).join('')}
+        }).join('')}
                 </div>
             </div>
         `;

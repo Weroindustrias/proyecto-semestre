@@ -8,7 +8,6 @@
     "dev": "electron .",
     "server": "node back/server.js",
     "web": "node back/server.js",
-    "react:dev": "npm --prefix fron run dev",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "dist:win": "electron-builder --win portable"

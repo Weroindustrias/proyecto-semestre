@@ -5,7 +5,7 @@
 // Estudiante: Melvin Jaeen García Camacho
 // ============================================================================
 
-import { obtenerMaestro } from '../dominio1/maestros.js';
+import { obtenerMaestro } from '../tareas.y.planificador/maestros.js';
 import { formatearTiempo, reproducirAlarma, mostrarNotificacionNavegador } from './notificaciones.js';
 
 export let focusSession = {
@@ -37,7 +37,7 @@ export const iniciarSesionEnfoque = (tareaId, listaTareas = []) => {
 
     const savedWork = localStorage.getItem('pf_pomodoro_work') || 25;
     const savedBreak = localStorage.getItem('pf_pomodoro_break') || 10;
-    
+
     const workInputEl = document.getElementById('focus-work-minutes');
     if (workInputEl) workInputEl.value = savedWork;
     const breakInputEl = document.getElementById('focus-break-minutes');
@@ -63,15 +63,15 @@ export const iniciarSesionEnfoque = (tareaId, listaTareas = []) => {
     document.getElementById('focus-task-meta').textContent = `${tarea.materia} • Estimado: ${tarea.horasEstimadas} hrs • Dificultad: ${tarea.dificultad}`;
     document.getElementById('focus-teacher-avatar').textContent = '💬';
     document.getElementById('focus-teacher-name').textContent = 'Tu Recordatorio';
-    document.getElementById('focus-teacher-quote').textContent = tarea.mensajeMotivacional 
-        ? `«${tarea.mensajeMotivacional}»` 
+    document.getElementById('focus-teacher-quote').textContent = tarea.mensajeMotivacional
+        ? `«${tarea.mensajeMotivacional}»`
         : `«${maestro.enfoque}»`;
 
     document.getElementById('focus-phase-icon').textContent = '⚙️';
     document.getElementById('focus-phase-badge').textContent = 'CONFIGURA TU POMODORO';
     document.getElementById('focus-timer-clock').textContent = '00:00:00';
     document.getElementById('focus-timer-sub').textContent = 'Ajusta tus minutos y presiona Iniciar';
-    
+
     const btnPause = document.getElementById('btn-pause-focus');
     if (btnPause) btnPause.innerHTML = '<span>⏸️ Pausar</span>';
 

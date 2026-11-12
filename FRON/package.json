@@ -1,20 +1,45 @@
 {
-  "name": "organizador-tareas-react-frontend",
-  "private": true,
+  "name": "organizador-inteligente-tareas",
   "version": "1.0.0",
-  "type": "module",
+  "description": "Organizador Inteligente de Tareas con Motor Funcional, Pomodoro y Métricas - Desktop & Web App",
+  "main": "back/main.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "start": "electron .",
+    "dev": "electron .",
+    "server": "node back/server.js",
+    "web": "node back/server.js",
+    "react:dev": "npm --prefix fron run dev",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win portable"
   },
-  "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
-  },
+  "keywords": [
+    "electron",
+    "programacion-funcional",
+    "pomodoro",
+    "organizador-tareas",
+    "javascript"
+  ],
+  "author": "Melvin Jaeen García Camacho",
+  "license": "ISC",
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.0.0"
+    "electron": "^45.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.udec.fime.organizadortareas",
+    "productName": "Organizador Inteligente de Tareas",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "fron/**/*",
+      "back/**/*"
+    ],
+    "win": {
+      "target": "portable"
+    }
   }
 }
-

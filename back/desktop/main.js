@@ -62,7 +62,7 @@ app.on('window-all-closed', () => {
 
 // Integrar el motor funcional de Node directamente en el proceso principal
 const motor = fs.existsSync(path.join(__dirname, 'motor.js'))
-    ? require('./motor')
+    ? require('../backen/motor')
     : require('./back/motor');
 
 // IPC Handlers para funciones del sistema nativo

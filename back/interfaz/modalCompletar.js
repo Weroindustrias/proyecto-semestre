@@ -5,7 +5,7 @@
 // Estudiante: Melvin Jaeen García Camacho
 // ============================================================================
 
-import { obtenerMaestro } from '../dominio1/maestros.js';
+import { obtenerMaestro } from '../tareas.y.planificador/maestros.js';
 
 export let tareaPendienteDeCompletar = null;
 
@@ -128,5 +128,42 @@ export const cerrarModalCompletar = () => {
         modal.style.display = 'none';
     }
     tareaPendienteDeCompletar = null;
+};
+
+/**
+ * Función Pura: Construye un objeto inmutable de tarea completada con métricas calculadas
+ * @param {object} tarea Tarea original
+ * @param {object} valores { horas, minutos, mensajePersonal }
+ * @returns {object} Tarea completada con estadísticas
+ */
+export const construirTareaCompletada = (tarea, { horas = 0, minutos = 0, mensajePersonal = '' } = {}) => {
+    const totalMinutosReales = Math.max(1, horas * 60 + minutos);
+    const totalMinutosEstimados = (tarea.horasEstimadas || 2) * 60;
+    const minutosAhorrados = totalMinutosEstimados - totalMinutosReales;
+    const eficienciaPorcentaje = Math.round((minutosAhorrados / totalMinutosEstimados) * 100);
+
+    const maestro = obtenerMaestro(tarea.materia);
+    const ahora = new Date();
+    const formatoFecha = `${ahora.getHours().toString().padStart(2, '0')}:${ahora.getMinutes().toString().padStart(2, '0')} - ${ahora.toLocaleDateString()}`;
+    const fechaISO = ahora.toISOString().split('T')[0];
+
+    const recordatorioFinal = mensajePersonal.trim()
+        || tarea.mensajeMotivacional
+        || (minutosAhorrados > 0 ? maestro.completadoAntes : maestro.completadoNormal);
+
+    return {
+        ...tarea,
+        id: `comp-${Date.now()}`,
+        idOriginal: tarea.id,
+        minutosEstimados: totalMinutosEstimados,
+        horasReales: (totalMinutosReales / 60).toFixed(1),
+        minutosReales: totalMinutosReales,
+        minutosAhorrados,
+        eficienciaPorcentaje,
+        fechaCompletada: formatoFecha,
+        fechaISO,
+        maestro,
+        mensajeMotivacional: recordatorioFinal
+    };
 };
 
